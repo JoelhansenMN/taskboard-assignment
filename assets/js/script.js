@@ -30,7 +30,7 @@ function generateTaskId() {
 }
 
 // Todo: create a function to create a task card
-function createTaskCard(task) {
+function createTaskCard(task) { //all this is needed to create a task card
   const taskCard = $('<div>')
   .addClass('card project-card draggable my-3')
   .attr('data-project-id', project.id);
@@ -59,20 +59,16 @@ if (task.dueDate && task.status !== 'done') {
 }
 
 // ? Gather all the elements created above and append them to the correct elements.
-cardBody.append(cardDescription, cardDueDate, cardDeleteBtn);
-taskCard.append(cardHeader, cardBody);
+cardBody.append(description, dueDate, cardDeleteBtn);
+taskCard.append(taskTitle, cardBody);
 
-// ? Return the card so it can be appended to the correct lane.
-return taskCard;
+
+return taskCard; // ? Return the card so it can be appended to the correct lane.
 }
-
-
-
-
 
 // Todo: create a function to render the task list and make cards draggable
 function renderTaskList() {
-  const projects = readProjectsFromStorage();
+  const projects = getTasksFromStorage();
 
   // ? Empty existing project cards out of the lanes
   const todoList = $('#todo-cards');
@@ -85,13 +81,13 @@ function renderTaskList() {
   doneList.empty();
 
   // ? Loop through projects and create project cards for each status
-  for (let project of projects) {
-    if (project.status === 'to-do') {
-      todoList.append(createProjectCard(project));
-    } else if (project.status === 'in-progress') {
-      inProgressList.append(createProjectCard(project));
-    } else if (project.status === 'done') {
-      doneList.append(createProjectCard(project));
+  for (let task of projects) {
+    if (task.status === 'to-do') {
+      todoList.append(createProjectCard(task));
+    } else if (task.status === 'in-progress') {
+      inProgressList.append(createProjectCard(task));
+    } else if (task.status === 'done') {
+      doneList.append(createProjectCard(task));
     }
   }
 
