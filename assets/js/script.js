@@ -10,7 +10,7 @@ const taskForm = $('formModal');   //DOM element for modal
 
 function getTasksFromStorage (){
   let string = localStorage.getItem('tasks');
-  let taskList = JSON.parse('string');
+  let taskList = JSON.parse('string') || [];
   
   return taskList;
 }
@@ -133,13 +133,13 @@ function handleAddTask(event){
   event.preventDefault();
 
   // ? Read user input from the form
-  const taskName = taskTitle.val();
+  const taskTitle = taskTitle.val();
   const description = description.val(); 
   const dueDate = dueDate.val(); // yyyy-mm-dd format
   const newTask = {
     // ? Here we use a Web API called `crypto` to generate a random id for our project. This is a unique identifier that we can use to find the project in the array. `crypto` is a built-in module that we can use in the browser and Nodejs.    id: crypto.randomUUID(),
     id: generateTaskId(),
-    name: taskName,
+    name: taskTitle,
     description: description,
     dueDate: dueDate,
     status: 'to-do',
@@ -147,7 +147,7 @@ function handleAddTask(event){
 
  
   const tasks = getTasksFromStorage();
-  tasks.push(newtask);
+  tasks.push(newTask);
 
   // ? Save the updated projects array to localStorage
   saveTaskToStorage(tasks);
@@ -162,38 +162,46 @@ function handleAddTask(event){
 
 };
 
-
-
 // Todo: create a function to handle dropping a task into a new status lane
-function handleDrop(e, ui) {
-  e.preventDefault()
-  console.log("drop")
-  const id = e.dataTransfer.getData('text/plain')
-  squares = squares.map( function( sq ){
-    if( sq.id !== id ) {
-      return sq
-    } else {
-      return {
-        id: sq.id,
-        label: sq.id,
-        location: 'B'
-      }
+function handleDrop(event, ui) {
+  const taskList = getTasksFromStorage();
+
+  // ? Get the project id from the event
+  const taskId = ui.draggable[0].dataset.taskId;
+
+  // ? Get the id of the lane that the card was dropped into
+  const newStatus = event.target.id;
+
+  for (let toDo of taskList) {
+    // ? Find the project card by the `id` and update the project status.
+    if (toDo.id === taskId) {
+      toDo.status = newStatus;
     }
-  })
-  populate()
-}
+  }
+  // ? Save the updated projects array to localStorage (overwritting the previous one) and render the new project data to the screen.
+  saveTaskToStorage(taskList);
 
-function handleDragOver(e){
-  e.preventDefault()
-}
+  renderTaskList();
+};
 
+ProjectFormEl.on('submit', handleProjectFormSubmit);
 
-//populate() 
-
-
+projectDisplayEl.on('click', '.delete', handleDeleteProject);
 // Todo: when the page loads, render the task list, add event listeners, make lanes droppable, and make the due date field a date picker
 $(document).ready(function () {
+  
+  renderTaskList();
 
+  $('#dueDate').datepicker({
+    changeMonth: true,
+    changeYear: true,
+  });
+
+  // ? Make lanes droppable
+  $('.lane').droppable({
+    accept: '.draggable',
+    drop: handleDrop,
+  });
 });
 
 
