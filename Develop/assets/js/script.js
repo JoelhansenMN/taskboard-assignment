@@ -31,23 +31,23 @@ function generateTaskId() {
 
 // Todo: create a function to create a task card
 function createTaskCard(task) {
-  const taskItem = $('<div>')
+  const taskCard = $('<div>')
   .addClass('card project-card draggable my-3')
   .attr('data-project-id', project.id);
-const cardHeader = $('<div>').addClass('card-header h4').text(project.name);
+const taskTitle = $('<div>').addClass('card-header h4').text(task.name);
 const cardBody = $('<div>').addClass('card-body');
-const cardDescription = $('<p>').addClass('card-text').text(project.type);
-const cardDueDate = $('<p>').addClass('card-text').text(project.dueDate);
+const description = $('<p>').addClass('card-text').text(task.type);
+const dueDate = $('<p>').addClass('card-text').text(task.dueDate);
 const cardDeleteBtn = $('<button>')
   .addClass('btn btn-danger delete')
   .text('Delete')
-  .attr('data-project-id', project.id);
+  .attr('data-project-id', task.id);
 cardDeleteBtn.on('click', handleDeleteProject);
 
 // ? Sets the card background color based on due date. Only apply the styles if the dueDate exists and the status is not done.
-if (project.dueDate && project.status !== 'done') {
+if (task.dueDate && task.status !== 'done') {
   const now = dayjs();
-  const taskDueDate = dayjs(project.dueDate, 'DD/MM/YYYY');
+  const taskDueDate = dayjs(task.dueDate, 'DD/MM/YYYY');
 
   // ? If the task is due today, make the card yellow. If it is overdue, make it red.
   if (now.isSame(taskDueDate, 'day')) {
