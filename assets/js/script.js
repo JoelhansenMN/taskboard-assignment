@@ -44,12 +44,12 @@ cardDeleteBtn
   .attr('data-task-id', task.id);
 //cardDeleteBtn.on('click', handleDeleteProject);
 
-// ? Sets the card background color based on due date. Only apply the styles if the dueDate exists and the status is not done.
+// Sets the card background color based on due date. Only apply the styles if the dueDate exists and the status is not done.
 if (task.dueDate && task.status !== 'done') {
   const now = dayjs();
   const taskDueDate = dayjs(task.dueDate, 'DD/MM/YYYY');
 
-  // ? If the task is due today, make the card yellow. If it is overdue, make it red.
+  // If the task is due today, make the card yellow. If it is overdue, make it red.
   if (now.isSame(taskDueDate, 'day')) {
     taskCard.addClass('bg-warning text-white');
   } else if (now.isAfter(taskDueDate)) {
@@ -58,12 +58,12 @@ if (task.dueDate && task.status !== 'done') {
   }
 }
 
-// ? Gather all the elements created above and append them to the correct elements.
+// Gathers all the elements created above and append them to the correct elements.
 cardBody.append(description, dueDate, cardDeleteBtn);
 taskCard.append(taskTitle, cardBody);
 
 
-return taskCard; // ? Return the card so it can be appended to the correct lane.
+return taskCard; //Return the card so it can be appended to the correct lane.
 }
 
 // Todo: create a function to render the task list and make cards draggable
@@ -90,17 +90,17 @@ function renderTaskList() {
     }
   };
 
-  // ? Use JQuery UI to make task cards draggable
+  // Use JQuery UI to make task cards draggable
   $('.draggable').draggable({
     opacity: 0.7,
     zIndex: 100,
-    // ? This is the function that creates the clone of the card that is dragged. This is purely visual and does not affect the data.
+    //  This is the function that creates the clone of the card that is dragged. This is purely visual and does not affect the data.
     helper: function (e) {
-      // ? Check if the target of the drag event is the card itself or a child element. If it is the card itself, clone it, otherwise find the parent card  that is draggable and clone that.
+      // ?Check if the target of the drag event is the card itself or a child element. If it is the card itself, clone it, otherwise find the parent card  that is draggable and clone that.
       const original = $(e.target).hasClass('ui-draggable')
         ? $(e.target)
         : $(e.target).closest('.ui-draggable');
-      // ? Return the clone with the width set to the width of the original card. This is so the clone does not take up the entire width of the lane. This is to also fix a visual bug where the card shrinks as it's dragged to the right.
+      // Return the clone with the width set to the width of the original card. This is so the clone does not take up the entire width of the lane. This is to also fix a visual bug where the card shrinks as it's dragged to the right.
       return original.clone().css({
         width: original.outerWidth(),
       });
@@ -114,17 +114,17 @@ function handleDeleteTask() {
   const taskId = $(this).attr('data-task-id');
   const taskList = getTasksFromStorage();
 
-  // ? Remove project from the array. There is a method called `filter()` for this that is better suited which we will go over in a later activity. For now, we will use a `forEach()` loop to remove the project.
+  // Remove project from the array. There is a method called `filter()` for this that is better suited which we will go over in a later activity. For now, we will use a `forEach()` loop to remove the project.
   taskList.forEach((task, i) => {
     if (task.id == taskId) {
       taskList.splice(i, 1);
     }
   });
 
-  // ? We will use our helper function to save the projects to localStorage
+  //  We will use our helper function to save the projects to localStorage
   saveTaskToStorage(taskList);
 
-  // ? Here we use our other function to print projects back to the screen
+  //  Here we use our other function to print projects back to the screen
   renderTaskList();
 }
 
@@ -132,7 +132,7 @@ function handleDeleteTask() {
 // Todo: create a function to handle adding a new task
 function handleAddTask(){
 
-  // ? Read user input from the form
+  // Read user input from the form
   const taskTitle1 = taskTitle.val();
   const description1 = description.val(); 
   const dueDate1 = dueDate.val(); // yyyy-mm-dd format
@@ -149,13 +149,13 @@ function handleAddTask(){
   const tasks = getTasksFromStorage();
   tasks.push(newTask);
 
-  // ? Save the updated projects array to localStorage
+  //  Save the updated projects array to localStorage
   saveTaskToStorage(tasks);
 
-  // ? Print project data back to the screen
+  // Print project data back to the screen
   renderTaskList();
 
-  // ? Clear the form inputs
+  // Clear the form inputs
   taskTitle.val('');
   description.val('');
   dueDate.val('');
@@ -178,7 +178,7 @@ function handleDrop(event, ui) {
       toDo.status = newStatus;
     }
   }
-  // ? Save the updated projects array to localStorage (overwritting the previous one) and render the new project data to the screen.
+  // Save the updated projects array to localStorage (overwritting the previous one) and render the new project data to the screen.
   saveTaskToStorage(taskList);
 
   renderTaskList();
