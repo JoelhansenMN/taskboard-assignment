@@ -10,7 +10,7 @@ This project was completed by Joel Hansen who was provided assistance from cohor
 
 
 ## link to github repo 
-[click here]()
+[click here](https://github.com/JoelhansenMN/taskboard-assignment)
 
 ## link to application
-[click here]()
+[click here](https://joelhansenmn.github.io/taskboard-assignment/)
