@@ -3,21 +3,21 @@
 //let nextId = JSON.parse(localStorage.getItem("nextId"));
 const taskTitle = $('#taskTitle');
 const dueDate = $('#dueDate');
-const taskDescription = $('#taskDesrciption');
+const description = $('#description');
 
-const taskLanes = $('swim-lanes'); //DOM element for taks lanes
-const taskForm = $('formModal');   //DOM element for modal
+const taskLanes = $('.swim-lanes'); //DOM element for taks lanes
+const taskForm = $('#formModal');   //DOM element for modal
 
 function getTasksFromStorage (){
   let string = localStorage.getItem('tasks');
-  let taskList = JSON.parse('string') || [];
+  let taskList = JSON.parse(string) || [];
   
   return taskList;
 }
 
 function saveTaskToStorage (taskList) {
-  JSON.stringify(taskList);
-  let saveData = localStorage.setItem('tasks', saveData);
+  let saveData = JSON.stringify(taskList);
+  localStorage.setItem('tasks', saveData);
 
 };
 
@@ -30,18 +30,19 @@ function generateTaskId() {
 
 // Todo: create a function to create a task card
 function createTaskCard(task) { //all this is needed to create a task card
-  const taskCard = $('<div>')
-  .addClass('card task-card draggable my-3')
+  const taskCard = $('<div>');
+  taskCard.addClass('card task-card draggable my-3')
   .attr('data-task-id', task.id);
 const taskTitle = $('<div>').addClass('card-header h4').text(task.name);
 const cardBody = $('<div>').addClass('card-body');
-const description = $('<p>').addClass('card-text').text(task.type);
+const description = $('<p>').addClass('card-text').text(task.description);
 const dueDate = $('<p>').addClass('card-text').text(task.dueDate);
-const cardDeleteBtn = $('<button>')
+const cardDeleteBtn = $('<button>');
+cardDeleteBtn
   .addClass('btn btn-danger delete')
   .text('Delete')
   .attr('data-task-id', task.id);
-cardDeleteBtn.on('click', handleDeleteProject);
+//cardDeleteBtn.on('click', handleDeleteProject);
 
 // ? Sets the card background color based on due date. Only apply the styles if the dueDate exists and the status is not done.
 if (task.dueDate && task.status !== 'done') {
@@ -115,13 +116,13 @@ function handleDeleteTask() {
 
   // ? Remove project from the array. There is a method called `filter()` for this that is better suited which we will go over in a later activity. For now, we will use a `forEach()` loop to remove the project.
   taskList.forEach((task, i) => {
-    if (task.id === taskId) {
+    if (task.id == taskId) {
       taskList.splice(i, 1);
     }
   });
 
   // ? We will use our helper function to save the projects to localStorage
-  saveTasksToStorage(taskList);
+  saveTaskToStorage(taskList);
 
   // ? Here we use our other function to print projects back to the screen
   renderTaskList();
@@ -129,19 +130,18 @@ function handleDeleteTask() {
 
 
 // Todo: create a function to handle adding a new task
-function handleAddTask(event){
-  event.preventDefault();
+function handleAddTask(){
 
   // ? Read user input from the form
-  const taskTitle = taskTitle.val();
-  const description = description.val(); 
-  const dueDate = dueDate.val(); // yyyy-mm-dd format
+  const taskTitle1 = taskTitle.val();
+  const description1 = description.val(); 
+  const dueDate1 = dueDate.val(); // yyyy-mm-dd format
   const newTask = {
-    // ? Here we use a Web API called `crypto` to generate a random id for our project. This is a unique identifier that we can use to find the project in the array. `crypto` is a built-in module that we can use in the browser and Nodejs.    id: crypto.randomUUID(),
+    //  Here we use a Web API called `crypto` to generate a random id for our project. This is a unique identifier that we can use to find the project in the array. `crypto` is a built-in module that we can use in the browser and Nodejs.    id: crypto.randomUUID(),
     id: generateTaskId(),
-    name: taskTitle,
-    description: description,
-    dueDate: dueDate,
+    name: taskTitle1,
+    description: description1,
+    dueDate: dueDate1,
     status: 'to-do',
   };
 
@@ -166,15 +166,15 @@ function handleAddTask(event){
 function handleDrop(event, ui) {
   const taskList = getTasksFromStorage();
 
-  // ? Get the project id from the event
+  //  Get the project id from the event
   const taskId = ui.draggable[0].dataset.taskId;
 
-  // ? Get the id of the lane that the card was dropped into
+  //  Get the id of the lane that the card was dropped into
   const newStatus = event.target.id;
 
   for (let toDo of taskList) {
     // ? Find the project card by the `id` and update the project status.
-    if (toDo.id === taskId) {
+    if (toDo.id == taskId) {
       toDo.status = newStatus;
     }
   }
@@ -184,9 +184,14 @@ function handleDrop(event, ui) {
   renderTaskList();
 };
 
-ProjectFormEl.on('submit', handleProjectFormSubmit);
+taskForm.on('click','#add-task', function(event){event.preventDefault() //when modal 
+  handleAddTask();
+  taskForm.modal("hide");
 
-projectDisplayEl.on('click', '.delete', handleDeleteProject);
+});
+ 
+taskLanes.on('click', '.delete', handleDeleteTask);
+
 // Todo: when the page loads, render the task list, add event listeners, make lanes droppable, and make the due date field a date picker
 $(document).ready(function () {
   
@@ -197,7 +202,7 @@ $(document).ready(function () {
     changeYear: true,
   });
 
-  // ? Make lanes droppable
+  // Make lanes droppable
   $('.lane').droppable({
     accept: '.draggable',
     drop: handleDrop,
